@@ -84,15 +84,8 @@ function dbtc_save_post( $post_id ) {
   if ( !wp_verify_nonce( $_POST['dbtc_noncename'], plugin_basename( __FILE__ ) ) )
       return;
 
-  if ( 'page' == $_POST['post_type'] ) 
-  {
-    if ( !current_user_can( 'edit_page', $post_id ) )
-        return;
-  }
-  else
-  {
-    if ( !current_user_can( 'edit_post', $post_id ) )
-        return;
+  if ( ! current_user_can( 'edit_post' ) ) {
+  	return;
   }
 
   if(isset($_POST['dbtc_checkbox'])){
