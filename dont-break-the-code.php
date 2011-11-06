@@ -72,7 +72,7 @@ function dbtc_custom_box() {
 
   echo '<input type="checkbox" id="dbtc_checkbox" name="dbtc_checkbox" '.$checked.'/>';
   echo '<label for="dbtc_checkbox">';
-       _e(" Disable", 'dbtc_textbox' );
+       _e(" Disable Visual Editor", 'dbtc_textbox' );
   echo '</label> ';
 }
 add_action( 'admin_init', 'dbtc_add_custom_box', 1 );
