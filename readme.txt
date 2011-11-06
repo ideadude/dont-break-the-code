@@ -3,7 +3,7 @@ Contributors: strangerstudios
 Tags: disable, visual editor, html, tab
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: .2
+Stable tag: .2.1
 
 Allows admins to disable the Visual editor tab on a per post basis.
 
@@ -32,6 +32,9 @@ post page.
 == Frequently Asked Questions ==
 
 == Changelog ==
+
+= .2.1 =
+* The checkbox wasn't showing up on the Edit Page page. Now it is. May need to figure a way to make this work with custom post types.
 
 = .2 =
 * Moved the checkbox into the screen options space.

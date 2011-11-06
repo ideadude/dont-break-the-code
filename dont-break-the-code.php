@@ -3,7 +3,7 @@
 Plugin Name: Don't Break The Code
 Plugin URI: http://www.strangerstudios.com/wp/dont-break-the-code/
 Description: Disable the Visual editor on a per post basis.
-Version: .2
+Version: .2.1
 Author: Stranger Studios (WordCamp Philly)
 Author URI: http://www.strangerstudios.com
 */
@@ -104,9 +104,8 @@ function dbtc_admin_footer_disabled()
 	Add checkbox to the screen settings.
 */
 function dbtc_screen_settings($current, $screen)
-{
-	$desired_screen = convert_to_screen('post.php');
-	if ( $screen->id == $desired_screen->id )
+{	
+	if(in_array($screen->id, array("post", "page")))
 	{
 		$checked = "";
   		if(isset($_GET['post']) && get_post_meta($_GET['post'], '_dbtc_disable_visual', true) != false) $checked = ' checked="checked" ';
@@ -117,6 +116,7 @@ function dbtc_screen_settings($current, $screen)
 		$current .=   __("Disable Visual Editor", 'dbtc_textbox' );
 	    $current .= '</label> ';
 	}
+		
 	return $current;
 }
 add_filter('screen_settings', 'dbtc_screen_settings', 10, 2);
