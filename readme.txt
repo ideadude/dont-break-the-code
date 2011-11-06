@@ -3,7 +3,7 @@ Contributors: strangerstudios
 Tags: disable, visual editor, html, tab
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: .2.2
+Stable tag: .2.3
 
 Allows admins to disable the Visual editor tab on a per post basis.
 
@@ -32,6 +32,9 @@ post page.
 == Frequently Asked Questions ==
 
 == Changelog ==
+
+= .2.3 =
+* Fixed bug where strikethrough wasn't being applied when toggling checkbox back and forth.
 
 = .2.2 =
 * Now only admins (current_user_can("manage_options")) can see/edit the disable visual editor checkbox.

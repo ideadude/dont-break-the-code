@@ -3,7 +3,7 @@
 Plugin Name: Don't Break The Code
 Plugin URI: http://www.strangerstudios.com/wp/dont-break-the-code/
 Description: Disable the Visual editor on a per post basis.
-Version: .2.2
+Version: .2.3
 Author: Stranger Studios (WordCamp Philly)
 Author URI: http://www.strangerstudios.com
 */
@@ -46,10 +46,10 @@ function dbtc_admin_footer()
 			jQuery('#edButtonPreview').attr('onclick', '');
 			if(jQuery('#edButtonPreviewSpan').length)
 			{				
-				jQuery('#edButtonPreviewspan').attr('style', '');
+				jQuery('#edButtonPreviewSpan').css('text-decoration', 'line-through');
 			}
 			else
-			{
+			{				
 				var edButtonPreviewHTML = jQuery('#edButtonPreview').html();
 				jQuery('#edButtonPreview').html('<span id="edButtonPreviewSpan" style="text-decoration:line-through">'+edButtonPreviewHTML+'</span>');
 			}
