@@ -143,4 +143,3 @@ function dbtc_save_options()
 }
 add_action('wp_ajax_dbtc_save', 'dbtc_save_options');
 ?>
-
