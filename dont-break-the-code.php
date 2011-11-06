@@ -13,32 +13,17 @@ Author URI: http://www.strangerstudios.com
 */
 function dbtc_load_post()
 {
-	//we're on the edit post page. let's rock
-	require_once(dirname(__FILE__) . "/lib/screen-options.php");
-	
-	//save cookie
 	$cookie_path = str_replace('/wp-admin/post.php','/',$_SERVER['PHP_SELF']);
 	setcookie('wp-settings-1','m5=3&editor=html&m9=o&m1=o',0,$cookie_path);
 		
-	//filter/action for javascript and setting cookie when disabled already		
 	add_filter("format_to_edit", "dbtc_format_to_edit");
 	add_action("admin_footer", "dbtc_admin_footer", 10);
-	
-	//screen options
-	add_screen_options_panel(
-		'dbtc-screen-options',       	  //Panel ID
-		"Don't Break the Code",           //Panel title. 
-		'dbtc_screen_options', 			  //The function that generates panel contents.
-		array('post', 'page'),            //Pages/screens where the panel is displayed. 
-		'dbtc_save_screen_options',      //The function that gets triggered when settings are submitted/saved.
-		true                              //Auto-submit settings (via AJAX) when they change. 
-	);
 }
 add_action("load-post.php", "dbtc_load_post");
 
 function dbtc_format_to_edit($content)
 {
-	if(isset($_GET['post']) && get_post_meta($_GET['post'], '_dbtc_disable_visual') != false){
+	if(isset($_GET['post']) && get_post_meta($_GET['post'], '_dbtc_disable_visual', true) != false){
 		$cookie_path = str_replace('/wp-admin/post.php','/',$_SERVER['PHP_SELF']);
 		setcookie('wp-settings-1','m5=3&editor=html&m9=o&m1=o',0,$cookie_path);
 		
@@ -80,16 +65,30 @@ function dbtc_admin_footer()
 		
 		jQuery(document).ready(function(){
 			jQuery('#dbtc_disable_visual').click(function(){
-				//disable the visual editor
+				
+				//disable/enable the visual editor
 				if(jQuery('#dbtc_disable_visual').attr('checked'))
+				{
 					dbtc_disableVisualEditor();								
+					var checked = '1';
+				}
 				else
+				{
 					dbtc_enableVisualEditor();
+					var checked = '';
+				}
+					
+				//update post meta
+				data = 'action=dbtc_save&post=<?php echo $_GET["post"]; ?>&dbtc_disable_visual=' + checked;				
+				jQuery.post(ajaxurl, data, function(response) {
+					//alert('Got this from the server: ' + response);
+				});
 			});
 		});
 	</script>
 <?php
 }
+
 function dbtc_admin_footer_disabled()
 {
 ?>
@@ -102,42 +101,42 @@ function dbtc_admin_footer_disabled()
 }
 
 /*
-	Screen Option functions.
+	Add checkbox to the screen settings.
 */
-function dbtc_screen_options()
+function dbtc_screen_settings($current, $screen)
 {
-	$checked = "";
-	if(isset($_GET['post']) && get_post_meta($_GET['post'], 'dbtc_disable_visual') != false) $checked = ' checked="checked" ';
-	
-	//$output .= "<h5>Don't Break The Code</h5>";
-	$output .= '<input type="hidden" name="post" value="' . $_GET['post'] . '" />';
-	$output .= '<input type="checkbox" id="dbtc_disable_visual" name="dbtc_disable_visual" '.$checked.'/>';
-    $output .= '<label for="dbtc_checkbox"> ';
-	$output .=   __("Disable Visual Editor", 'dbtc_textbox' );
-    $output .= '</label> ';
-	
-	return $output;
-}
-
-function dbtc_save_screen_options($params)
-{		
-	//get the post id
-	$newparams = array();
-	foreach($params as $param => $value)
-	{		
-		if($param == "post")
-			$post_id = $value;
-		else
-			$newparams[$param] = $value;
-	}
-	
-	//save the params
-	foreach($newparams as $param => $value)
+	$desired_screen = convert_to_screen('post.php');
+	if ( $screen->id == $desired_screen->id )
 	{
-		if($value == "on")
-			update_post_meta($post_id, "_" . $param, $value);
-		else
-			update_post_meta($post_id, "_" . $param, $value);
+		$checked = "";
+  		if(isset($_GET['post']) && get_post_meta($_GET['post'], '_dbtc_disable_visual', true) != false) $checked = ' checked="checked" ';
+		
+		$current .= "<h5>Don't Break The Code</h5>";
+		$current .= '<input type="checkbox" id="dbtc_disable_visual" name="dbtc_disable_visual" '.$checked.'/>';
+	    $current .= '<label for="dbtc_checkbox"> ';
+		$current .=   __("Disable Visual Editor", 'dbtc_textbox' );
+	    $current .= '</label> ';
 	}
+	return $current;
 }
+add_filter('screen_settings', 'dbtc_screen_settings', 10, 2);
+
+/*
+	Ajax called when saving options
+*/
+function dbtc_save_options()
+{		
+	$dbtc_disable_visual = $_POST['dbtc_disable_visual'];
+	$post_id = $_POST['post'];
+		
+	if($post_id && $dbtc_disable_visual !== NULL)
+	{											
+		update_post_meta($post_id, "_dbtc_disable_visual", $dbtc_disable_visual);							
+	}
+	
+	//this is called via Ajax, so just exit here
+	exit;
+}
+add_action('wp_ajax_dbtc_save', 'dbtc_save_options');
 ?>
+
