@@ -3,7 +3,7 @@
 Plugin Name: Don't Break The Code
 Plugin URI: http://www.strangerstudios.com/wp/dont-break-the-code/
 Description: Disable the Visual editor on a per post basis.
-Version: .2.3
+Version: .3
 Author: Stranger Studios (WordCamp Philly)
 Author URI: http://www.strangerstudios.com
 */
@@ -43,23 +43,23 @@ function dbtc_admin_footer()
 		function dbtc_disableVisualEditor()
 		{
 			switchEditors.go('content', 'html');
-			jQuery('#edButtonPreview').attr('onclick', '');
+			jQuery('#content-tmce').attr('onclick', '');
 			if(jQuery('#edButtonPreviewSpan').length)
 			{				
 				jQuery('#edButtonPreviewSpan').css('text-decoration', 'line-through');
 			}
 			else
 			{				
-				var edButtonPreviewHTML = jQuery('#edButtonPreview').html();
-				jQuery('#edButtonPreview').html('<span id="edButtonPreviewSpan" style="text-decoration:line-through">'+edButtonPreviewHTML+'</span>');
+				var edButtonPreviewHTML = jQuery('#content-tmce').html();
+				jQuery('#content-tmce').html('<span id="edButtonPreviewSpan" style="text-decoration:line-through">'+edButtonPreviewHTML+'</span>');
 			}
 		}
 		
 		function dbtc_enableVisualEditor()
 		{
 			switchEditors.go('content', 'tinymce');
-			jQuery('#edButtonPreview').attr('onclick', "switchEditors.go('content', 'tinymce');");
-			//var edButtonPreviewHTML = jQuery('#edButtonPreview').html();
+			jQuery('#content-tmce').attr('onclick', "switchEditors.go('content', 'tinymce');");
+			//var edButtonPreviewHTML = jQuery('#content-tmce').html();
 			jQuery('#edButtonPreviewSpan').attr('style', '');
 		}
 		
@@ -115,7 +115,7 @@ function dbtc_screen_settings($current, $screen)
   		if(isset($_GET['post']) && get_post_meta($_GET['post'], '_dbtc_disable_visual', true) != false) $checked = ' checked="checked" ';
 		
 		$current .= "<h5>Don't Break The Code</h5>";
-		$current .= '<input type="checkbox" id="dbtc_disable_visual" name="dbtc_disable_visual" '.$checked.'/>';
+		$current .= '<input type="checkbox" id="dbtc_disable_visual" name="dbtc_disable_visual" '.$checked.'/> ';
 	    $current .= '<label for="dbtc_checkbox"> ';
 		$current .=   __("Disable Visual Editor", 'dbtc_textbox' );
 	    $current .= '</label> ';
